@@ -1,0 +1,63 @@
+<?php
+
+function opengraphprotocol_preprocess_node(&$variables) {
+//var_dump($variables);
+  $node = $variables['node'];
+  $meta_tags[] = array(
+    'property' => 'og:title',
+    'content' => $node->title,
+  );
+  $meta_tags[] = array(
+    'property' => 'og:type',
+    'content' => $node->type,
+  );
+  $meta_tags[] = array(
+    'property' => 'og:url',
+    'content' => url('node/' . $node->nid, array('absolute' => TRUE)),
+  );
+  $meta_tags[] = array(
+    'property' => 'og:site-name',
+    'content' => variable_get('site_name'),
+  );
+  // Exposes the value of any field known to og:.
+  $og_properties = array('description', 'image', 'latitude', 'longitude', 'street-address', 'locality', 'region', 'postal-code', 'country-name', 'email', 'phone_number', 'fax_number');
+  foreach ($og_properties as $property) {
+    $field = 'field_' . $property;
+    if (isset($node->$field)) {
+      $field_info = field_info_field($field);
+      switch ($field_info['module']) {
+        case 'number' :
+          $meta_tags[] = array(
+            'property' => 'og:' . $property ,
+            'content' => isset($node->{$field}[LANGUAGE_NONE][0]['value']) ? $node->{$field}[LANGUAGE_NONE][0]['value'] : '',
+          );
+          break;
+        case 'text' :
+          $meta_tags[] = array(
+            'property' => 'og:' . $property ,
+            'content' => isset($node->{$field}[LANGUAGE_NONE][0]['safe_value']) ? $node->{$field}[LANGUAGE_NONE][0]['safe_value'] : '',
+          );
+          break;
+        case 'image' :
+          $uri = file_create_url($node->{$field}[LANGUAGE_NONE][0]['uri']);
+          $meta_tags[] = array(
+            'property' => 'og:' . $property ,
+            'content' => isset($uri) ? $uri : '',
+          );
+          break;
+      }
+    }
+  }
+  foreach ($meta_tags as $id => $meta_tag) {
+    drupal_add_html_head(array('#tag' => 'meta', '#attributes' => $meta_tag), 'opengraphprotocol' . $id);
+  }
+}
+
+/**
+ * Implements hook_rdf_namespaces().
+ */
+function opengraphprotocol_rdf_namespaces() {
+  return array(
+    'og'      => 'http://opengraphprotocol.org/schema/',
+  );
+}

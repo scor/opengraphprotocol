@@ -1,0 +1,7 @@
+; $Id:  $
+name = Open Graph Protocol
+description = A module for the Open Graph Protocol.
+package = Other
+version = VERSION
+core = 7.x
+files[] = opengraphprotocol.module
