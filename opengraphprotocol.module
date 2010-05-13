@@ -16,6 +16,9 @@ function opengraphprotocol_rdf_namespaces() {
 
 /**
  * Implements hook_form_FORM_ID_alter().
+ *
+ * Adds a vertical tab in the edit content type form to specify which Open
+ * Graph protocol type should associated with each content type.
  */
 function opengraphprotocol_form_node_type_form_alter(&$form, $form_state) {
   // Object types defined at http://opengraphprotocol.org/#types
@@ -106,6 +109,8 @@ function opengraphprotocol_form_node_type_form_alter(&$form, $form_state) {
 
 /**
  * Implements MODULE_preprocess_HOOK().
+ *
+ * Adds the various Open Graph protocol HTML elements during page rendering.
  */
 function opengraphprotocol_preprocess_node(&$variables) {
   $node = $variables['node'];
