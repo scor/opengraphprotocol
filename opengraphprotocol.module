@@ -1,7 +1,14 @@
 <?php
 
+/**
+ * @file
+ * Enables Open Graph protocol output for Drupal sites.
+ */
+
+/**
+ * Implements MODULE_preprocess_HOOK().
+ */
 function opengraphprotocol_preprocess_node(&$variables) {
-//var_dump($variables);
   $node = $variables['node'];
   $meta_tags[] = array(
     'property' => 'og:title',
@@ -25,29 +32,36 @@ function opengraphprotocol_preprocess_node(&$variables) {
     $field = 'field_' . $property;
     if (isset($node->$field)) {
       $field_info = field_info_field($field);
+      // We need a different logic depending on the type of data to be exposed.
       switch ($field_info['module']) {
         case 'number' :
-          $meta_tags[] = array(
-            'property' => 'og:' . $property ,
-            'content' => isset($node->{$field}[LANGUAGE_NONE][0]['value']) ? $node->{$field}[LANGUAGE_NONE][0]['value'] : '',
-          );
+          if (isset($node->{$field}[LANGUAGE_NONE][0]['value'])) {
+            $meta_tags[] = array(
+              'property' => 'og:' . $property ,
+              'content' => $node->{$field}[LANGUAGE_NONE][0]['value'],
+            );
+          }
           break;
         case 'text' :
-          $meta_tags[] = array(
-            'property' => 'og:' . $property ,
-            'content' => isset($node->{$field}[LANGUAGE_NONE][0]['safe_value']) ? $node->{$field}[LANGUAGE_NONE][0]['safe_value'] : '',
-          );
+          if (isset($node->{$field}[LANGUAGE_NONE][0]['safe_value'])) {
+            $meta_tags[] = array(
+              'property' => 'og:' . $property ,
+              'content' => $node->{$field}[LANGUAGE_NONE][0]['safe_value'],
+            );
+          }
           break;
         case 'image' :
-          $uri = file_create_url($node->{$field}[LANGUAGE_NONE][0]['uri']);
-          $meta_tags[] = array(
-            'property' => 'og:' . $property ,
-            'content' => isset($uri) ? $uri : '',
-          );
+          if (isset($node->{$field}[LANGUAGE_NONE][0]['uri'])) {
+            $meta_tags[] = array(
+              'property' => 'og:' . $property ,
+              'content' => file_create_url($node->{$field}[LANGUAGE_NONE][0]['uri']),
+            );
+          }
           break;
       }
     }
   }
+  // Outputs all the various metadata above in meta tags in the head tag.
   foreach ($meta_tags as $id => $meta_tag) {
     drupal_add_html_head(array('#tag' => 'meta', '#attributes' => $meta_tag), 'opengraphprotocol' . $id);
   }
