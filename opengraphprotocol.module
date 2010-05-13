@@ -97,6 +97,7 @@ function opengraphprotocol_form_node_type_form_alter(&$form, $form_state) {
     $form['opengraphprotocol']['opengraphprotocol_type'] = array(
       '#type' => 'select',
       '#title' => t('Open Graph protocol type'),
+      '#description' => t('Choose the Open Graph protocol type you want to associate with this content type.'),
       '#default_value' => variable_get('opengraphprotocol_type_' . $form['#node_type']->type, ''),
       '#options' => $og_types_options,
     );
