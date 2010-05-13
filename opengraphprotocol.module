@@ -6,17 +6,117 @@
  */
 
 /**
+ * Implements hook_rdf_namespaces().
+ */
+function opengraphprotocol_rdf_namespaces() {
+  return array(
+    'og'      => 'http://opengraphprotocol.org/schema/',
+  );
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function opengraphprotocol_form_node_type_form_alter(&$form, $form_state) {
+  // Object types defined at http://opengraphprotocol.org/#types
+  $og_types = array(
+    'Activities' => array(
+      'activity',
+      'sport',
+    ),
+    'Businesses' => array(
+      'bar',
+      'company',
+      'cafe',
+      'hotel',
+      'restaurant',
+    ),
+    'Groups' => array(
+      'cause',
+      'sports_league',
+      'sports_team',
+    ),
+    'Organizations' => array(
+      'band',
+      'government',
+      'non_profit',
+      'school',
+      'university',
+    ),
+    'People' => array(
+      'actor',
+      'athlete',
+      'author',
+      'director',
+      'musician',
+      'politician',
+      'public_figure',
+    ),
+    'Places' => array(
+      'city',
+      'country',
+      'landmark',
+      'state_province',
+    ),
+    'Products and Entertainment' => array(
+      'album',
+      'book',
+      'drink',
+      'food',
+      'game',
+      'movie',
+      'product',
+      'song',
+      'tv_show',
+    ),
+    'Websites' => array(
+      'article',
+      // website and blog are designed to represent an entire site, an og:type
+      // tag with types website or blog should usually only appear on the root
+      // of a domain. see http://developers.facebook.com/docs/opengraph
+      //'blog',
+      //'website',
+    ),
+  );
+
+  // Serializes the OGP types for Drupal's Form API drop down list.
+  foreach ($og_types as $name => $group) {
+    foreach ($group as $type) {
+      $og_types_options[$name][$type] = $type;
+    }
+  }
+
+  if (isset($form['type'])) {
+    $form['opengraphprotocol'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Open Graph protocol settings'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#group' => 'additional_settings',
+    );
+    $form['opengraphprotocol']['opengraphprotocol_type'] = array(
+      '#type' => 'select',
+      '#title' => t('Open Graph protocol type'),
+      '#default_value' => variable_get('opengraphprotocol_type_' . $form['#node_type']->type, ''),
+      '#options' => $og_types_options,
+    );
+  }
+}
+
+/**
  * Implements MODULE_preprocess_HOOK().
  */
 function opengraphprotocol_preprocess_node(&$variables) {
   $node = $variables['node'];
+  // Uses the mapping for og:type if it has been defined by the administrator.
+
+  $meta_tags[] = array(
+    'property' => 'og:type',
+    'content' => variable_get('opengraphprotocol_type_' . $node->type, $node->type),
+  );
   $meta_tags[] = array(
     'property' => 'og:title',
     'content' => $node->title,
-  );
-  $meta_tags[] = array(
-    'property' => 'og:type',
-    'content' => $node->type,
   );
   $meta_tags[] = array(
     'property' => 'og:url',
@@ -26,7 +126,7 @@ function opengraphprotocol_preprocess_node(&$variables) {
     'property' => 'og:site-name',
     'content' => variable_get('site_name'),
   );
-  // Exposes the value of any field known to og:.
+  // Exposes the value of any field known to og: (these are optional).
   $og_properties = array('description', 'image', 'latitude', 'longitude', 'street-address', 'locality', 'region', 'postal-code', 'country-name', 'email', 'phone_number', 'fax_number');
   foreach ($og_properties as $property) {
     $field = 'field_' . $property;
@@ -61,17 +161,8 @@ function opengraphprotocol_preprocess_node(&$variables) {
       }
     }
   }
-  // Outputs all the various metadata above in meta tags in the head tag.
+  // Outputs all the various metadata from above as meta tags in the head tag.
   foreach ($meta_tags as $id => $meta_tag) {
-    drupal_add_html_head(array('#tag' => 'meta', '#attributes' => $meta_tag), 'opengraphprotocol' . $id);
+    drupal_add_html_head(array('#tag' => 'meta', '#attributes' => $meta_tag), 'opengraphprotocol_' . $id);
   }
-}
-
-/**
- * Implements hook_rdf_namespaces().
- */
-function opengraphprotocol_rdf_namespaces() {
-  return array(
-    'og'      => 'http://opengraphprotocol.org/schema/',
-  );
 }
