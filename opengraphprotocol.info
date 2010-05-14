@@ -1,6 +1,6 @@
 ; $Id:  $
 name = Open Graph Protocol
-description = Allows to annotate page with the Open Graph protocol and make them available in Facebook.
+description = Allows to annotate pages with the Open Graph protocol and make them available to Facebook.
 package = Other
 version = VERSION
 core = 7.x

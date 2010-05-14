@@ -114,8 +114,8 @@ function opengraphprotocol_form_node_type_form_alter(&$form, $form_state) {
  */
 function opengraphprotocol_preprocess_node(&$variables) {
   $node = $variables['node'];
-  // Uses the mapping for og:type if it has been defined by the administrator.
 
+  // Uses the mapping for og:type if it has been defined by the administrator.
   $meta_tags[] = array(
     'property' => 'og:type',
     'content' => variable_get('opengraphprotocol_type_' . $node->type, $node->type),
@@ -171,4 +171,7 @@ function opengraphprotocol_preprocess_node(&$variables) {
   foreach ($meta_tags as $id => $meta_tag) {
     drupal_add_html_head(array('#tag' => 'meta', '#attributes' => $meta_tag), 'opengraphprotocol_' . $id);
   }
+
+  // Places a Facebook "Like" button below the body of the node.
+  $variables['content']['body']['#suffix'] = '<iframe src="http://www.facebook.com/plugins/like.php?href=' . urlencode(url('node/' . $node->nid, array('absolute' => TRUE))) . '&amp;layout=standard&amp;show_faces=true&amp;width=450&amp;action=like&amp;font&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:80px;" allowTransparency="true"></iframe>';
 }
