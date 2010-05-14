@@ -11,6 +11,7 @@
 function opengraphprotocol_rdf_namespaces() {
   return array(
     'og'      => 'http://opengraphprotocol.org/schema/',
+    'fb'      => 'http://www.facebook.com/2008/fbml',
   );
 }
 
@@ -104,6 +105,12 @@ function opengraphprotocol_form_node_type_form_alter(&$form, $form_state) {
       '#default_value' => variable_get('opengraphprotocol_type_' . $form['#node_type']->type, ''),
       '#options' => $og_types_options,
     );
+    $form['opengraphprotocol']['opengraphprotocol_fb_admins'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Facebook Admins IDs'),
+      '#description' => t('A comma-separated list of Facebook user IDs that administer the pages of this content type.'),
+      '#default_value' => variable_get('opengraphprotocol_fb_admins_' . $form['#node_type']->type, ''),
+    );
   }
 }
 
@@ -131,6 +138,10 @@ function opengraphprotocol_preprocess_node(&$variables) {
   $meta_tags[] = array(
     'property' => 'og:site-name',
     'content' => variable_get('site_name'),
+  );
+  $meta_tags[] = array(
+    'property' => 'fb:admins',
+    'content' => variable_get('opengraphprotocol_fb_admins_' . $node->type, ''),
   );
   // Exposes the value of any field known to og: (these are optional).
   $og_properties = array('description', 'image', 'latitude', 'longitude', 'street-address', 'locality', 'region', 'postal-code', 'country-name', 'email', 'phone_number', 'fax_number');
@@ -173,5 +184,5 @@ function opengraphprotocol_preprocess_node(&$variables) {
   }
 
   // Places a Facebook "Like" above the node links.
-  $variables['content']['links']['node']['#prefix'] = '<div id="opengraphprotocol-like"><iframe src="http://www.facebook.com/plugins/like.php?href=' . urlencode(url('node/' . $node->nid, array('absolute' => TRUE))) . '&amp;layout=standard&amp;show_faces=true&amp;width=450&amp;action=like&amp;font&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:350px; height:30px;" allowTransparency="true"></iframe></div>';
+  $variables['content']['links']['node']['#prefix'] = '<div id="opengraphprotocol-like"><iframe src="http://www.facebook.com/plugins/like.php?href=' . urlencode(url('node/' . $node->nid, array('absolute' => TRUE))) . '&amp;layout=standard&amp;show_faces=true&amp;width=450&amp;action=like&amp;font&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:350px; height:80px;" allowTransparency="true"></iframe></div>';
 }
