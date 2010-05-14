@@ -172,6 +172,6 @@ function opengraphprotocol_preprocess_node(&$variables) {
     drupal_add_html_head(array('#tag' => 'meta', '#attributes' => $meta_tag), 'opengraphprotocol_' . $id);
   }
 
-  // Places a Facebook "Like" button below the body of the node.
-  $variables['content']['body']['#suffix'] = '<iframe src="http://www.facebook.com/plugins/like.php?href=' . urlencode(url('node/' . $node->nid, array('absolute' => TRUE))) . '&amp;layout=standard&amp;show_faces=true&amp;width=450&amp;action=like&amp;font&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:80px;" allowTransparency="true"></iframe>';
+  // Places a Facebook "Like" above the node links.
+  $variables['content']['links']['node']['#prefix'] = '<div id="opengraphprotocol-like"><iframe src="http://www.facebook.com/plugins/like.php?href=' . urlencode(url('node/' . $node->nid, array('absolute' => TRUE))) . '&amp;layout=standard&amp;show_faces=true&amp;width=450&amp;action=like&amp;font&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:350px; height:30px;" allowTransparency="true"></iframe></div>';
 }
