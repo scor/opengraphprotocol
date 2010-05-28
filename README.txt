@@ -1,6 +1,9 @@
 This is a prototype module for Drupal 7 to leverage the Open Graph Protocol
 http://opengraphprotocol.org/
 
+See announcement
+http://openspring.net/blog/2010/05/26/the-open-graph-protocol-and-drupal
+
 Install this module on your Drupal 7 site and create content type using the same
 og:type as defined at http://opengraphprotocol.org/, e.g. bar, company, food.
 Similarly, create your fields following the same convention depending on what is
