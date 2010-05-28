@@ -4,13 +4,11 @@ http://opengraphprotocol.org/
 See announcement
 http://openspring.net/blog/2010/05/26/the-open-graph-protocol-and-drupal
 
-Install this module on your Drupal 7 site and create content type using the same
-og:type as defined at http://opengraphprotocol.org/, e.g. bar, company, food.
-Similarly, create your fields following the same convention depending on what is
-relevant to your content type. The list of recognized fields is: 'description',
-'image', 'latitude', 'longitude', 'street-address', 'locality', 'region',
-'postal-code', 'country-name', 'email', 'phone_number', 'fax_number'.
+Install this module on your Drupal 7 site and select the og:type you want to
+be associated with your each content type in Structure >> Content types >> Edit.
+Create your fields using the same og property you want them to be mapped to,
+e.g. 'description', 'image', 'latitude', 'longitude', 'locality', 'email', etc.
 
 Author:
-scor <http://openspring.net/>
+Stéphane "scor" Corlosquet <stephane@openspring.net>
 
