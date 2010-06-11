@@ -136,7 +136,7 @@ function opengraphprotocol_preprocess_node(&$variables) {
     'content' => url('node/' . $node->nid, array('absolute' => TRUE)),
   );
   $meta_tags[] = array(
-    'property' => 'og:site-name',
+    'property' => 'og:site_name',
     'content' => variable_get('site_name'),
   );
   $meta_tags[] = array(
