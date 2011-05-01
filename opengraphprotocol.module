@@ -10,7 +10,7 @@
  */
 function opengraphprotocol_rdf_namespaces() {
   return array(
-    'og'      => 'http://opengraphprotocol.org/schema/',
+    'og'      => 'http://ogp.me/ns#',
     'fb'      => 'http://www.facebook.com/2008/fbml',
   );
 }
